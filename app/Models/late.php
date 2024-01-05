@@ -9,5 +9,15 @@ class late extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'student_id',
+        'date_time_late',
+        'information',
+        'bukti'
+    ];
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
 }

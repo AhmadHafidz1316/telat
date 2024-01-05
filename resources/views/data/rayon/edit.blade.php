@@ -9,14 +9,16 @@
                 <label for="rayon" class="block text-gray-700 text-sm font-bold mb-2">rayon:</label>
                 <input type="text" id="rayon" name="rayon"
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Masukkan rayon" required value="{{ $rayon->rayon }}">
+                    placeholder="Masukkan rayon" required value="{{ old('') }}">
             </div>
 
             <div class="mb-4">
                 <select name="user_id" id="user_id" class="form-control">
                     @foreach ($users as $user)
                         <option selected hidden disabled>Pilih PS</option>
-                        <option value="{{ $user['name'] }}">{{ $user['name'] }}</option>
+                        <option value="{{ $user['name'] }}" {{ $user['name'] == $rayon->user_id ? 'selected' : '' }}>
+                            {{ $user['name'] }}
+                        </option>
                     @endforeach
                 </select>
             </div>

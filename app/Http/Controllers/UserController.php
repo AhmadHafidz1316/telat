@@ -45,11 +45,12 @@ class UserController extends Controller
 
         $password = substr($request->name, 0, 3) . substr($request->email, 0, 3);
 
+
         User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'role' => $request->role,
-        'password' => Hash::make($password),
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
+            'password' => Hash::make($password),
         ]);
 
         return redirect()->route('user.data')->with('success', 'Berhasil menambahkan data pengguna !!!');
@@ -75,24 +76,24 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         User::where('id', $id)->update([
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
         ]);
-        
+
         if ($request->has('password')) {
             User::where('id', $id)->update([
                 'password' => bcrypt($request->password),
             ]);
         }
-            
-        User::where('id',$id)->update([
-        'name' => $request->name,
-        'email' => $request->email,
-        'role' => $request->role, 
+
+        User::where('id', $id)->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
         ]);
 
         return redirect()->route('user.data')->with('success', 'Berhasil mengubah data pengguna !!!');
@@ -114,9 +115,16 @@ class UserController extends Controller
             'password' => 'required',
         ]);
 
+
         $user = $request->only(['email', 'password']);
+
         if (Auth::attempt($user)) {
-            return redirect()->route('home.page');
+            $role = auth()->user()->role;
+            if ($role === 'admin') {
+                return redirect('/dashboard/admin');
+            } else {
+                return redirect('/dashboard/ps');
+            }
         } else {
             return redirect()->back()->with('failed', 'Prosess login gagal, silahkan coba kembali dengan data yang benar !');
         }

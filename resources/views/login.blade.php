@@ -7,40 +7,94 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Login Form</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .login-card {
+            width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #e8e8e8;
+            box-shadow: 2px 2px 10px #ccc;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 20px
+        }
+
+        .card-header .log {
+            margin: 0;
+            font-size: 24px;
+            color: black;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: 0.5s;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            background-color: #333;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #ccc;
+            color: black;
+        }
+    </style>
 </head>
 
-<body class="bg-gray-100 h-screen flex items-center justify-center">
-
-    <div class="bg-white p-8 rounded shadow-md w-96">
-        <h2 class="text-2xl font-semibold mb-6">Login</h2>
-
-        <form action="{{ route('login.auth') }}" method="POST">
+<body class=" h-screen flex items-center justify-center">
+        <form action="{{ route('login.auth') }}" method="POST"
+            class="animate__animated animate__fadeIn animate__faster">
             @csrf
             @if (Session::get('failed'))
-                <div class="alert alert-danger">{{ Session::get('failed') }}</div>
+                <div class="bg-red-100 p-2 mb-4 text-red-600 border border-red-500 rounded">
+                    {{ Session::get('failed') }}
+                </div>
             @endif
-            <br>
-            <div class="mb-4">
-                <label for="email" class="block text-sm font-medium text-gray-600">Email</label>
-                <input type="email" id="email" name="email"
-                    class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" />
-            </div>
 
-            <div class="mb-4">
-                <label for="password" class="block text-sm font-medium text-gray-600">Password</label>
-                <input type="password" id="password" name="password"
-                    class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" />
+            <div class="login-card">
+                <div class="card-header">
+                    <div class="log"></div>
+                </div>
+                <form>
+                    <div class="form-group">
+                        <label for="email">Email :</label>
+                        <input required="" name="email" id="email" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input required="" name="password" id="password" type="password">
+                    </div>
+                    <div class="form-group">
+                        <input value="Login" type="submit">
+                    </div>
+                </form>
             </div>
-
-            <div class="flex items-center justify-between">
-                <button type="submit"
-                    class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800">
-                    Login
-                </button>
-                <a href="#" class="text-blue-500 hover:underline">Forgot Password?</a>
-            </div>
-        </form>
-    </div>
 
 </body>
 

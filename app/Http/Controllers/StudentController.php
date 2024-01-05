@@ -6,6 +6,7 @@ use App\Models\Student;
 use App\Models\rayon;
 use App\Models\rombel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
@@ -14,9 +15,28 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $rayon = rayon::all();
-        $rombel = rombel::all();
-        return view('data.siswa.index', compact('rayon', 'rombel'));
+        $student = Student::with('rombel', 'rayon')->orderBy('name', 'ASC')->simplePaginate(5);
+        return view('data.siswa.index', compact('student'));
+    }
+
+    public function data(Request $request)
+    {
+        $userIdLogin = Auth::id();
+        $rayonIdLogin = rayon::where('user_id', $userIdLogin)->value('id');
+
+        $perPage = $request->input('perPage', 5);
+        $search = $request->input('search');
+
+        $students = Student::with('rayon', 'rombel')
+            ->where('rayon_id', $rayonIdLogin)
+            ->when($search, function ($query) use ($search) {
+                $query->where('nis', 'LIKE', '%' . $search . '%')
+                    ->orWhere('name', 'LIKE', '%' . $search . '%');
+            })
+            ->orderBy('created_at', 'ASC')
+            ->paginate($perPage);
+
+        return view('ps.siswa', compact('students', 'perPage', 'search'));
     }
 
     /**
@@ -34,6 +54,8 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
+
+
         $request->validate([
             'nis' => 'required',
             'name' => 'required',
@@ -62,24 +84,36 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Student $student)
+    public function edit($id)
     {
-        //
+
+        $student = Student::find($id);
+        $rombel = rombel::all();
+        $rayon = rayon::all();
+        return view('data.siswa.edit', compact('student', 'rombel', 'rayon'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Student $student)
+    public function update(Request $request, $id)
     {
-        //
+        Student::where('id', $id)->update([
+            'nis' => $request->nis,
+            'name' => $request->name,
+            'rombel_id' => $request->rombel_id,
+            'rayon_id' => $request->rayon_id,
+        ]);
+
+        return redirect()->route('siswa.index')->with('success', 'Berhasil mengubah data pengguna !!!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Student $student)
+    public function destroy($id)
     {
-        //
+        Student::where('id', $id)->delete();
+        return redirect()->route('siswa.index')->with('deleted', 'Berhasil menghapus data!!!');
     }
 }

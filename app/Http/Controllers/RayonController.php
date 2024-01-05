@@ -13,9 +13,9 @@ class RayonController extends Controller
      */
     public function index()
     {
-        $rayon = rayon::orderBy('rayon', 'ASC')->simplePaginate(5);
-        $users = User::where('role','ps')->get();
-        return view('data.rayon.index', compact('rayon','users'));
+        $rayons = rayon::with('user')->orderBy('rayon', 'ASC')->simplePaginate(5);
+        $users = User::where('role', 'ps')->get();
+        return view('data.rayon.index', compact('rayons', 'users'));
     }
 
     /**
@@ -24,7 +24,7 @@ class RayonController extends Controller
     public function create()
     {
         $users = User::where('role', 'ps')->get();
-        return view('data.rayon.create' ,compact('users'));
+        return view('data.rayon.create', compact('users'));
     }
 
     /**
@@ -32,14 +32,14 @@ class RayonController extends Controller
      */
     public function store(Request $request)
     {
-        $request -> validate([
+        $request->validate([
             'rayon' => 'required',
             'user_id' => 'required',
         ]);
 
-        rayon::create ([
-            'rayon'=>$request->rayon,
-            'user_id'=>$request->user_id,
+        rayon::create([
+            'rayon' => $request->rayon,
+            'user_id' => $request->user_id,
         ]);
 
         return redirect()->route('rayon.index')->with('success', 'Berhasil Menambah !!! ');
@@ -59,20 +59,20 @@ class RayonController extends Controller
     public function edit($id)
     {
         $rayon = rayon::find($id);
-        $users = User::where('role','ps')->get();
-        return view('data.rayon.edit', compact('rayon','users'));
+        $users = User::where('role', 'ps')->get();
+        return view('data.rayon.edit', compact('rayon', 'users'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         rayon::where('id', $id)->update([
             'rayon' => $request->rayon,
             'user_id' => $request->user_id,
         ]);
-            
+
         return redirect()->route('rayon.index')->with('success', 'Berhasil mengubah data pengguna !!!');
     }
 

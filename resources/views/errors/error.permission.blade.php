@@ -15,7 +15,14 @@
             class="d-block m-auto" width="300">
         <h4 class="text-center"></h4>
         <div class="d-block m-auto">
-                <a href="{{ route('home.page') }}" class="btn btn-info mt-3">Kembali</a>
+            @if (Auth::check())
+                @if (Auth::user()->role() == 'admin')
+                    <a href="{{ route('admin.index') }}" class="btn btn-info mt-3">Kembali</a>
+                @else
+                    <a href="{{ route('ps.index') }}" class="btn btn-info mt-3">Kembali</a>
+                @endif
+            @endif
+
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"

@@ -19,7 +19,7 @@ class IsAdmin
         if (Auth::user()->role === 'admin') {
             return $next($request);
         } else {
-            return redirect()->route('error.permission');
+            return redirect()->route('login')->with('canAccess', 'Silahkan login terlebih dahulu!');
         }
     }
 }
